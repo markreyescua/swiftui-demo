@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-
+    
     // MARK: Properties
     @AppStorage("isOnboarding") var isOnboarding: Bool = true
-
+    @State private var isShowingSettings: Bool = false
+    
     var fruits: [Fruit] = fruitsData
-
+    
     // MARK: Body
     var body: some View {
         NavigationView {
@@ -24,10 +25,22 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Fruits List")
-            .navigationBarItems(leading: Image(systemName: "chevron.backward")
-                .onTapGesture(perform: {
-                    isOnboarding = true
-                }))
+            .navigationBarItems(
+                leading:
+                    Image(systemName: "chevron.backward")
+                    .onTapGesture(perform: {
+                        isOnboarding = true
+                    }),
+                trailing:
+                    Button(action: {
+                        isShowingSettings = true
+                    }) {
+                        Image(systemName: "slider.horizontal.3")
+                    }
+                    .sheet(isPresented: $isShowingSettings) {
+                        SettingsView()
+                    }
+            )
             .navigationBarTitleDisplayMode(.automatic)
         }
         .navigationViewStyle(.stack)
@@ -37,5 +50,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(fruits: fruitsData)
+            .preferredColorScheme(.dark)
     }
 }
